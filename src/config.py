@@ -4,6 +4,10 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 def _get_bool(name: str, default: bool = False) -> bool:
     value = os.getenv(name)
