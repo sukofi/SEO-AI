@@ -33,6 +33,7 @@ class Config:
     gemini_api_key: str
     gemini_api_endpoint: str
     discord_webhook_url: str
+    discord_bot_token: str
     log_path: Path
     log_level: str
     dry_run: bool
@@ -46,13 +47,13 @@ class Config:
             google_sheets_spreadsheet_id=os.getenv("GOOGLE_SHEETS_SPREADSHEET_ID", "").strip(),
             google_sheets_range=os.getenv("GOOGLE_SHEETS_RANGE", "").strip(),
             serp_api_key=os.getenv("SERP_API_KEY", "").strip(),
-            serp_api_endpoint=os.getenv("SERP_API_ENDPOINT", "").strip(),
-            serp_api_key_param=os.getenv("SERP_API_KEY_PARAM", "api_key").strip(),
+            serp_api_endpoint=os.getenv("SERP_API_ENDPOINT", "https://google.serper.dev/search").strip(),
+            serp_api_key_param=os.getenv("SERP_API_KEY_PARAM", "X-API-KEY").strip(),
             serp_api_query_param=os.getenv("SERP_API_QUERY_PARAM", "q").strip(),
-            serp_api_location_param=os.getenv("SERP_API_LOCATION_PARAM"),
-            serp_api_location_value=os.getenv("SERP_API_LOCATION_VALUE"),
-            serp_api_language_param=os.getenv("SERP_API_LANGUAGE_PARAM"),
-            serp_api_language_value=os.getenv("SERP_API_LANGUAGE_VALUE"),
+            serp_api_location_param=os.getenv("SERP_API_LOCATION_PARAM", "gl"),
+            serp_api_location_value=os.getenv("SERP_API_LOCATION_VALUE", "jp"),
+            serp_api_language_param=os.getenv("SERP_API_LANGUAGE_PARAM", "hl"),
+            serp_api_language_value=os.getenv("SERP_API_LANGUAGE_VALUE", "ja"),
             own_domain=os.getenv("OWN_DOMAIN", "").strip(),
             gemini_api_key=os.getenv("GEMINI_API_KEY", "").strip(),
             gemini_api_endpoint=os.getenv(
@@ -60,6 +61,7 @@ class Config:
                 "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent",
             ).strip(),
             discord_webhook_url=os.getenv("DISCORD_WEBHOOK_URL", "").strip(),
+            discord_bot_token=os.getenv("DISCORD_BOT_TOKEN", "").strip(),
             log_path=Path(os.getenv("LOG_PATH", "logs/seo_reporter.log")),
             log_level=os.getenv("LOG_LEVEL", "INFO"),
             dry_run=_get_bool("DRY_RUN", False),
@@ -85,7 +87,7 @@ class Config:
             raise ValueError(f"Missing required env vars: {', '.join(missing)}")
 
     def load_service_account(self) -> Optional[dict]:
-        if not self.google_service_account_json:
+        if not self.google_service_account_json or not self.google_service_account_json.exists():
             return None
         content = self.google_service_account_json.read_text(encoding="utf-8")
         return json.loads(content)
