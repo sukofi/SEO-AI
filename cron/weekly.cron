@@ -1,0 +1,2 @@
+# 毎週月曜9:00 (JST) に実行
+0 9 * * 1 cd /workspace/SEO-AI && /usr/bin/env bash -lc 'source .venv/bin/activate && python src/seo_reporter.py >> logs/cron.log 2>&1'
